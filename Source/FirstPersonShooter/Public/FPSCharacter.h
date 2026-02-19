@@ -4,16 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "Camera/CameraComponent.h"
-#include "GameFramework/Character.h"
 #include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h" 
+#include "EnhancedInputSubsystems.h"
+#include "GameFramework/Character.h"
 #include "InputActionValue.h"
 #include "FPSCharacter.generated.h"
 
-
+class AEquippableToolBase;
+class UAnimBlueprint;
+class UEquippableToolDefinition;
 class UInputMappingContext;
 class UInputAction;
 class UInputComponent;
+class UItemDefinition;
+class UInventoryComponent;
 
 
 UCLASS()
@@ -24,6 +28,9 @@ class FIRSTPERSONSHOOTER_API AFPSCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AFPSCharacter();
+
+	UPROPERTY(EditAnywhere, Category = Animation)
+	TObjectPtr<UAnimBlueprint> FirstPersonDefaultAnim;
 
 protected:
 	// Called when the game starts or when spawned
@@ -41,6 +48,17 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<UInputAction> LookAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> UseAction;
+
+	UPROPERTY(VisibleAnywhere, Category = "Inventory")
+	TObjectPtr<UInventoryComponent> InventoryComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tools")
+	TObjectPtr<AEquippableToolBase> EquippedTool;
+
+
 
 public:	
 
@@ -71,4 +89,17 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Mesh)
 	TObjectPtr<USkeletalMeshComponent> FirstPersonMeshComponent;
 
+	UFUNCTION()
+	bool IsToolAlreadyOwned(UEquippableToolDefinition* ToolDefinition);
+
+	UFUNCTION()
+	void AttachTool(UEquippableToolDefinition* ToolDefinition);
+
+	UFUNCTION()
+	void GiveItem(UItemDefinition* ItemDefinition);
+
+	UFUNCTION()
+	FVector GetCameraTargetLocation();
+
+	
 };
