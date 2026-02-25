@@ -7,6 +7,8 @@
 #include "EquippableToolDefinition.h"
 #include "ItemDefinition.h"
 #include "InventoryComponent.h"
+#include "Blueprint/UserWidget.h"
+#include "GameFramework/PlayerController.h"
 
 AFPSCharacter::AFPSCharacter()
 {
@@ -216,5 +218,28 @@ FVector AFPSCharacter::GetCameraTargetLocation()
 
 	}
 	return TargetPosition;
+}
+
+void AFPSCharacter::GameOver()
+{
+	if (GameOverWidgetClass)
+	{
+		UUserWidget* GameOverWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass);
+
+		if (GameOverWidget)
+		{
+			GameOverWidget->AddToViewport();
+
+			APlayerController* PC = GetWorld()->GetFirstPlayerController();
+			if (PC)
+			{
+				PC->SetInputMode(FInputModeUIOnly());
+				PC->bShowMouseCursor = true;
+			}
+		}
+	}
+
+	// Optional: disable movement
+	DisableInput(GetWorld()->GetFirstPlayerController());
 }
 

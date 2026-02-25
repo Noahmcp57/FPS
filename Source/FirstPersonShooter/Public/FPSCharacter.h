@@ -101,5 +101,10 @@ public:
 	UFUNCTION()
 	FVector GetCameraTargetLocation();
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> GameOverWidgetClass;
+
+	UFUNCTION()
+	void GameOver();
 	
 };
